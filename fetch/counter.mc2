@@ -1,0 +1,32 @@
+//
+// Description : This macro fetch data for a counter
+// Input: read token
+//        GTS class filter
+//        GTS labels filter
+//        end timestamp
+//        timespan
+//        bucket's interval
+// Output: [ GTS ]
+//
+<%
+  'interval' STORE
+  'span' STORE
+  'now' STORE
+  'labels' STORE
+  'class' STORE
+  'token' STORE
+
+  $token
+  $class
+  $labels
+  $now
+  $span
+  FETCH
+
+  false RESETS // Remove counter resets
+
+  [ SWAP bucketizer.last $now $interval $span $interval / ] BUCKETIZE
+
+  FILLPREVIOUS
+  FILLNEXT
+%>

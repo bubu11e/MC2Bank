@@ -1,0 +1,9 @@
+//
+// Description : This macro compute the delta of the value n with the value n-1
+// Input : [ GTS ]
+// Output : [ GTS ]
+//
+<%
+  [ SWAP mapper.delta 1 0 0 ]  MAP                       // Compute delta
+  [ SWAP <% DUP VALUES SIZE 1 - -1 * SHRINK %> FOREACH ] // Remove first point
+%>

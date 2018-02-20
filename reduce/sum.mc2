@@ -1,0 +1,13 @@
+//
+// Description : This macro sum GTSs.
+// Input :  [ GTS ]
+//          [ labels ]
+// Output : [ GTS ]
+//
+<%
+  'labels' STORE
+  'gts' STORE
+
+  // ToDo : Assert that GTS is bucketized.
+  [ $gts $labels reducer.sum ]  MAP // Compute sum
+%>

@@ -1,0 +1,22 @@
+//
+// Description : This macro fetch data for a counter
+// Input: read token
+//        GTS class filter
+//        GTS labels filter
+// Output: Classes
+//
+<%
+  'labels' STORE
+  'class' STORE
+  'token' STORE
+
+  $token
+  $class
+  $labels
+  FIND
+
+  [ SWAP <% NAME %> FOREACH ] UNIQUE
+
+  LIST->
+  DROP
+%>
