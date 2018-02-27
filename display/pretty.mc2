@@ -1,0 +1,10 @@
+//
+// Description : This macro modify GTS for display
+// Input : [ GTS ]
+//         maximum number of points
+// Output : [ GTS ]
+//
+<%
+  LTTB // Reduce number of points
+  SORT // Sort values to avoid display issues with some tools
+%>
