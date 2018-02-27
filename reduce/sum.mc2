@@ -9,5 +9,5 @@
   'gts' STORE
 
   // ToDo : Assert that GTS is bucketized.
-  [ $gts $labels reducer.sum ]  MAP // Compute sum
+  [ $gts $labels reducer.sum ] REDUCE // Compute sum
 %>
