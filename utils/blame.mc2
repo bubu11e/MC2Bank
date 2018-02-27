@@ -1,0 +1,31 @@
+//
+// Description : This macro fetch data for a counter
+// Input: read token
+//        GTS class filter
+//        GTS labels filter
+// Output: Classes
+//
+<%
+  'labels' STORE
+  'class' STORE
+  'token' STORE
+
+  $token
+  $class
+  $labels
+  FIND
+  
+  {} 'names' STORE // Create an empty map to store results
+
+  <%
+    NAME 'name' STORE // Retrieve GTS name
+    <% $names $name GET ISNULL %> // Add a new entry in the map if it does not exist
+    <% $names 0 $name PUT DROP %>
+    IFT
+    
+    $names $names $name GET 1 + $name PUT DROP // Increment counter
+    
+  %> FOREACH
+  
+  $names // Display result
+%>
