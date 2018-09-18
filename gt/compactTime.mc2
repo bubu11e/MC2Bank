@@ -1,0 +1,23 @@
+//
+// Description : This macro keep only changing state tick (first). The first tick is dissmiss.
+// Input : [ GTS ]
+// Output : [ GTS ]
+//
+<%
+  [ SWAP
+    <%
+      'mapping_window' STORE
+      $mapping_window 0 GET 'tick' STORE
+      $mapping_window 7 GET 'values' STORE
+
+      <% $values UNIQUE SIZE 1 == %>
+      <% $tick NaN NaN NaN NULL %>
+      <% $tick NaN NaN NaN $values DUP SIZE 1 - GET %>
+      IFTE
+
+    %> MACROMAPPER
+    1
+    0
+    0
+  ] MAP
+%>
