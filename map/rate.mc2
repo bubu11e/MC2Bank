@@ -1,0 +1,9 @@
+//
+// Description : This macro compute the rate between the value n with the value n-1
+// Input : [ GTS ]
+// Output : [ GTS ]
+//
+<%
+  [ SWAP mapper.rate 1 0 0 ]  MAP                       // Compute delta
+  [ SWAP <% DUP VALUES SIZE 1 - -1 * SHRINK %> FOREACH ] // Remove first point
+%>
