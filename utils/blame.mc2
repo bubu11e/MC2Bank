@@ -1,5 +1,5 @@
 //
-// Description : This macro fetch data for a counter
+// Description : Retrieve cardinality of each class matching the selector.
 // Input: read token
 //        GTS class filter
 //        GTS labels filter

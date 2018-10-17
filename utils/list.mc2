@@ -1,5 +1,5 @@
 //
-// Description : This macro fetch data for a counter
+// Description : List all available class for the matching selector.
 // Input: read token
 //        GTS class filter
 //        GTS labels filter
