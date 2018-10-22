@@ -4,9 +4,13 @@
 //          filter (Map that filter alerts)
 //          end (Instant of the last alert to be taken into account)
 //          depth (Period to watch)
+//          notify_parameters (Notify macro parameters as an array)
+//          notify_macro (Notify macro to trigger for every non acknoledged alert)
 // Output : [ GTS ] (One per alert with unaknowledged ticks) 
 //
 <%
+  'notify_macro' STORE
+  'notify_parameters' STORE
   'depth' STORE
   'end' STORE
   'filter' STORE
@@ -36,5 +40,21 @@
       []
       op.negmask
     ] APPLY APPEND
+  %> FOREACH
+
+  // Running through every alert
+  <%
+    'acks' STORE
+    $acks LABELS 'selector' STORE
+    $acks TICKS
+    // Running through every ticks
+    <%
+      'tick' STORE
+      { 
+        'tick' $tick 
+        'alert' $selector 
+        'details' [ $details [] $selector filter.bylabels ] FILTER 0 NEWGTS @MC2Bank/list_map/get_or_default $tick ATTICK 4 GET
+      } $notify_parameters LIST-> DROP $notify_macro EVAL
+    %> FOREACH
   %> FOREACH
 %>
