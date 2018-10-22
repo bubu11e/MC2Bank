@@ -1,0 +1,32 @@
+//
+// Description : This set level for an alert
+// Input :  write_token (For alert storage)
+//          selector (Map that uniquely match this alert)
+//          tick (Instant of the alert)
+//          level (Level of the alert as a long)
+//          details (Map with details informations about the alert)
+// Output :
+//
+<%
+  NULL 'details' STORE
+  <% DUP TYPEOF 'MAP' == %>
+  <% 'details' STORE %>
+  IFT
+  
+  'level' STORE
+  'tick' STORE
+  'selector' STORE
+  'token' STORE
+  
+  $level TYPEOF 'LONG' == ASSERT
+  $tick TYPEOF 'LONG' == ASSERT 
+  $selector TYPEOF 'MAP' == ASSERT
+  $token TYPEOF 'STRING' == ASSERT
+  
+  [ NEWGTS 'alert.level' RENAME $selector RELABEL [ $tick NaN NaN NaN $level ] ADDVALUE ]
+  <% $details ISNULL ! %>
+  <% [ NEWGTS 'alert.details' RENAME $selector RELABEL [ $tick NaN NaN NaN $details ->JSON ] ADDVALUE ] APPEND %>
+  IFT
+  $token
+  UPDATE
+%>

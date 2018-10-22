@@ -1,0 +1,20 @@
+//
+// Description : This macro aknowledge an alert
+// Input :  write_token (For alert storage)
+//          selector (Map that uniquely match this alert)
+//          tick (Instant of the alert)
+// Output : 
+//
+<%
+  'tick' STORE
+  'selector' STORE
+  'token' STORE
+  
+  $tick TYPEOF 'LONG' == ASSERT 
+  $selector TYPEOF 'MAP' == ASSERT
+  $token TYPEOF 'STRING' == ASSERT
+  
+  [ NEWGTS 'alert.ack' RENAME $selector RELABEL [ $tick NaN NaN NaN T ] ADDVALUE ]
+  $token
+  UPDATE
+%>

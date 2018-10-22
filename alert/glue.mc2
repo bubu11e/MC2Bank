@@ -1,0 +1,40 @@
+//
+// Description : This retrieve all unaknowledged alerts
+// Input :  read_token (For alert storage)
+//          filter (Map that filter alerts)
+//          end (Instant of the last alert to be taken into account)
+//          depth (Period to watch)
+// Output : [ GTS ] (One per alert with unaknowledged ticks) 
+//
+<%
+  'depth' STORE
+  'end' STORE
+  'filter' STORE
+  'token' STORE
+  
+  // Fetch alerts
+  [ $token '~alert.(level|ack|details)' $filter $end $depth ] FETCH
+
+  // Filter differents parts of the alerts into differents vars
+  DUP DUP
+  // Here we compact the level part of the alert to only keep changing state
+  [ SWAP [] 'alert.level' filter.byclass ] FILTER @MC2Bank/gt/compactTime 'level' STORE
+  [ SWAP [] 'alert.details' filter.byclass ] FILTER 'details' STORE
+  [ SWAP [] 'alert.ack' filter.byclass ] FILTER 'ack' STORE
+
+  []
+  $level
+  // Running through every alert
+  <%
+    LABELS 'selector' STORE // Retrieve alert selector
+    // Filter unacknoledged ticks
+    [
+      // Get alert ack time serie
+      [ $ack [] $selector filter.bylabels ] FILTER DUP SIZE <% 0 == %> <% [ NEWGTS ] APPEND %> IFT 
+      // Get alert level alert time serie
+      [ $level [] $selector filter.bylabels ] FILTER
+      []
+      op.negmask
+    ] APPLY APPEND
+  %> FOREACH
+%>
