@@ -18,7 +18,7 @@
   // Filter differents parts of the alerts into differents vars
   DUP DUP
   // Here we compact the level part of the alert to only keep changing state
-  [ SWAP [] 'alert.level' filter.byclass ] FILTER @MC2Bank/gt/compactTime 'level' STORE
+  [ SWAP [] 'alert.level' filter.byclass ] FILTER @MC2Bank/gt/compact_time 'level' STORE
   [ SWAP [] 'alert.details' filter.byclass ] FILTER 'details' STORE
   [ SWAP [] 'alert.ack' filter.byclass ] FILTER 'ack' STORE
 
