@@ -1,0 +1,33 @@
+//
+// Description : This macro compute the asked percentile for a bunch of GTS
+// Input :  [ GTS ]
+//          [ labels ]
+//          percentile (between 0 and 100)
+// Output : [ GTS ]
+//
+<%
+  'percentile' STORE // Store asked percentile
+  'labels' STORE     // Store equivalence classes
+  
+  [ SWAP
+    $labels
+    <%
+      'input' STORE
+      $input 7 GET LSORT 'values' STORE // Store ordered values
+      $values SIZE 1 TODOUBLE - $percentile * 100. / 'rank' STORE // Store percentile rank in values array
+
+      $rank FLOOR 'xa' STORE
+      $xa 'xb' STORE
+
+      <% $rank $xa - 0. > %>
+      <% $xa 1 + 'xb' STORE %>
+      IFT
+
+      $values $xa GET 'ya' STORE
+      $values $xb GET 'yb' STORE
+  
+      // Here we use the Tailor-Young formula to compute the linear interpolation
+      $input 0 GET NaN NaN NaN $ya $rank $xa - $yb $ya - $xb $xa - / * +
+    %> MACROREDUCER
+  ] REDUCE
+%>
