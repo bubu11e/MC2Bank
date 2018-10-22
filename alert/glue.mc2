@@ -34,7 +34,7 @@
     // Filter unacknoledged ticks
     [
       // Get alert ack time serie
-      [ $ack [] $selector filter.bylabels ] FILTER DUP SIZE <% 0 == %> <% [ NEWGTS ] APPEND %> IFT 
+      [ $ack [] $selector filter.bylabels ] FILTER DUP SIZE <% 0 == %> <% [ NEWGTS 'alert.ack' RENAME $selector RELABEL ] APPEND %> IFT 
       // Get alert level alert time serie
       [ $level [] $selector filter.bylabels ] FILTER
       []
