@@ -49,7 +49,7 @@
   // Running through every alert
   <%
     'acks' STORE
-    $acks LABELS 'selector' STORE
+    $acks LABELS '.app' REMOVE DROP 'selector' STORE
     $acks TICKS
     // Running through every ticks
     <%
