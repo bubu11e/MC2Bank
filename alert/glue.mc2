@@ -57,7 +57,7 @@
       { 
         'tick' $tick 
         'alert' $selector 
-        'details' [ $details [] $selector filter.bylabels ] FILTER 0 NEWGTS @MC2Bank/list_map/get_or_default $tick ATTICK 4 GET
+        'details' [ $details [] $selector filter.bylabels ] FILTER 0 NEWGTS @MC2Bank/list_map/get_or_default $tick ATTICK 4 '{}' @MC2Bank/list_map/get_or_default JSON->
       } $notify_parameters LIST-> DROP $notify_macro EVAL
     %> FOREACH
   %> FOREACH
