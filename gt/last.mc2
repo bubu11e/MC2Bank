@@ -1,0 +1,13 @@
+//
+// Description : This macro keep only the last tick of every GTS. 
+// Input : [ GTS ]
+// Output : [ GTS ]
+//
+<%
+  [
+    SWAP
+    <%
+      DUP CLONEEMPTY SWAP DUP LASTTICK ATTICK ADDVALUE
+    %> FOREACH
+  ]
+%>
