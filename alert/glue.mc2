@@ -4,7 +4,6 @@
 //          alert_filter (Map that filter alerts)
 //          end (Instant of the last alert to be taken into account)
 //          depth (Period to watch)
-//          tick_filter (Macro used to keep only certain tick of an alert (the last one for exemple))
 //          notify_parameters (Notify macro parameters as an array)
 //          notify_macro (Notify macro to trigger for every non acknoledged alert)
 // Output : [ GTS ] (One per alert with unaknowledged ticks) 
@@ -12,7 +11,6 @@
 <%
   'notify_macro' STORE
   'notify_parameters' STORE
-  'tick_filter' STORE
   'depth' STORE
   'end' STORE
   'alert_filter' STORE
@@ -43,8 +41,6 @@
       op.negmask
     ] APPLY APPEND
   %> FOREACH
-
-  $tick_filter EVAL
 
   // Running through every alert
   <%
