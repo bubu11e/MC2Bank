@@ -15,6 +15,15 @@
   'end' STORE
   'alert_filter' STORE
   'token' STORE
+
+  <%
+    MAP-> ->MAP MSORT
+    MAP-> '' SWAP TOLONG JOIN
+   'UTF-8' ->BYTES
+    SHA1
+    ->HEX
+  %> 'hash' STORE
+
   
   // Fetch alerts
   [ $token '~alert.(level|ack|details)' $alert_filter $end $depth ] FETCH
@@ -32,12 +41,15 @@
     'selected_level' STORE
     // Retrieve alert selector
     $selected_level LABELS '.app' REMOVE DROP 'selector' STORE
-    // Retrieve details matching selector
-    [ $details [] $selector filter.bylabels ] FILTER 
-      DUP SIZE <% 0 == %> <% DROP NEWGTS 'alert.details' RENAME $selector RELABEL %> <% 0 GET %> IFTE 'selected_details' STORE
-    // Retrieve acks matching selector
-    [ $ack [] $selector filter.bylabels ] FILTER
-      DUP SIZE <% 0 == %> <% DROP NEWGTS 'alert.ack' RENAME $selector RELABEL %> <% 0 GET %> IFTE 'selected_ack' STORE
+    $selected_level LABELS  $hash EVAL 'key' STORE
+
+    // Retrieve details matching selector (we don't use the filter framework has it's not effiscient enough here)
+    $details <% DUP <% LABELS $hash EVAL $key == %> <% 'selected_details' STORE BREAK %> <% DROP %> IFTE %> FOREACH 
+    <% 'selected_details' DEFINED ! %> <% NEWGTS 'alert.details' RENAME $selector RELABEL 'selected_details' STORE %> IFT
+
+    // Retrieve acks matching selector (we don't use the filter framework has it's not effiscient enough here)
+    $ack <% DUP <% LABELS $hash EVAL $key == %> <% 'selected_ack' STORE BREAK %> <% DROP %> IFTE %> FOREACH
+    <% 'selected_ack' DEFINED ! %> <% NEWGTS 'alert.ack' RENAME $selector RELABEL 'selected_ack' STORE %> IFT
     
     // Filter unacknoledged ticks
     [
