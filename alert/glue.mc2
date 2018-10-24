@@ -26,30 +26,30 @@
   [ SWAP [] 'alert.details' filter.byclass ] FILTER 'details' STORE
   [ SWAP [] 'alert.ack' filter.byclass ] FILTER 'ack' STORE
 
-  []
   $level
   // Running through every alert
   <%
-    LABELS 'selector' STORE // Retrieve alert selector
+    'selected_level' STORE
+    // Retrieve alert selector
+    $selected_level LABELS '.app' REMOVE DROP 'selector' STORE
+    // Retrieve details matching selector
+    [ $details [] $selector filter.bylabels ] FILTER 
+      DUP SIZE <% 0 == %> <% DROP NEWGTS 'alert.details' RENAME $selector RELABEL %> <% 0 GET %> IFTE 'selected_details' STORE
+    // Retrieve acks matching selector
+    [ $ack [] $selector filter.bylabels ] FILTER
+      DUP SIZE <% 0 == %> <% DROP NEWGTS 'alert.ack' RENAME $selector RELABEL %> <% 0 GET %> IFTE 'selected_ack' STORE
+    
     // Filter unacknoledged ticks
     [
       // Get alert ack time serie
-      [ $ack [] $selector filter.bylabels ] FILTER DUP SIZE <% 0 == %> <% [ NEWGTS 'alert.ack' RENAME $selector RELABEL ] APPEND %> IFT 
-      // Get alert level alert time serie
-      [ $level [] $selector filter.bylabels ] FILTER
+      [ $selected_ack ]
+      [ $selected_level ]
       []
       op.negmask
-    ] APPLY APPEND
-  %> FOREACH
-
-  // Running through every alert
-  <%
-    'acks' STORE
-    $acks LABELS '.app' REMOVE DROP 'selector' STORE
-    [ $level [] $selector filter.bylabels ] FILTER 0 GET 'selected_level' STORE
-    [ $details [] $selector filter.bylabels ] FILTER // Filter details gts with current selector
-    0 NEWGTS @MC2Bank/list_map/get_or_default 'selected_details' STORE // Get details gts or NEWGTS if none match
-    $acks TICKS
+    ] APPLY
+    
+    TICKS
+    
     // Running through every ticks
     <%
       'tick' STORE
