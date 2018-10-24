@@ -35,6 +35,12 @@
   [ SWAP [] 'alert.details' filter.byclass ] FILTER 'details' STORE
   [ SWAP [] 'alert.ack' filter.byclass ] FILTER 'ack' STORE
 
+  // Generate map to store details and acks for performance
+  {} 'details_m' STORE
+  {} 'ack_m' STORE
+  $details <% $details_m SWAP DUP LABELS $hash EVAL PUT DROP %> FOREACH
+  $ack <% $ack_m SWAP DUP LABELS $hash EVAL PUT DROP %> FOREACH
+
   $level
   // Running through every alert
   <%
@@ -44,12 +50,10 @@
     $selected_level LABELS  $hash EVAL 'key' STORE
 
     // Retrieve details matching selector (we don't use the filter framework has it's not effiscient enough here)
-    $details <% DUP <% LABELS $hash EVAL $key == %> <% 'selected_details' STORE BREAK %> <% DROP %> IFTE %> FOREACH 
-    <% 'selected_details' DEFINED ! %> <% NEWGTS 'alert.details' RENAME $selector RELABEL 'selected_details' STORE %> IFT
+    $details_m $key GET DUP <% ISNULL %> <% DROP NEWGTS 'alert.details' RENAME $selector RELABEL %> IFT 'selected_details' STORE
 
     // Retrieve acks matching selector (we don't use the filter framework has it's not effiscient enough here)
-    $ack <% DUP <% LABELS $hash EVAL $key == %> <% 'selected_ack' STORE BREAK %> <% DROP %> IFTE %> FOREACH
-    <% 'selected_ack' DEFINED ! %> <% NEWGTS 'alert.ack' RENAME $selector RELABEL 'selected_ack' STORE %> IFT
+    $ack_m $key GET DUP <% ISNULL %> <% DROP NEWGTS 'alert.ack' RENAME $selector RELABEL %> IFT 'selected_ack' STORE
     
     // Filter unacknoledged ticks
     [
