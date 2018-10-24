@@ -58,8 +58,7 @@
         'alert' $selector 
         'level' $selected_level $tick ATTICK 4 GET
         'details' $selected_details $tick ATTICK 4 GET // Retrieve the value at the tick we are interested in
-                  <% DUP ISNULL %> <% DROP '{}' %> IFT // If the value if null (no details info), we replace by an empty json object
-                  JSON-> // Deserialization
+                  <% DUP ISNULL ! %> <% JSON-> %> IFT
       } $notify_parameters LIST-> DROP $notify_macro EVAL
     %> FOREACH
   %> FOREACH
