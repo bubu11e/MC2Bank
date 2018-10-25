@@ -1,0 +1,13 @@
+//
+// Description : Add a mark in the trace.
+// Input :
+// Output :
+//
+<%
+  OPS NOW '-' 3 JOIN
+  
+  <% 'mc2bank.trace.trace' DEFINED %>
+  <% $mc2bank.trace.trace  SWAP ',' 2 JOIN 'mc2bank.trace.trace' STORE %>
+  <% 'mc2bank.trace.trace' STORE %>
+  IFTE
+%>

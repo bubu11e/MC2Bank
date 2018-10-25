@@ -1,0 +1,35 @@
+//
+// Description : Report the trace.
+// Input :
+// Output :
+//
+<%
+  <% 'mc2bank.trace.trace' DEFINED %>
+  <% 
+    $mc2bank.trace.trace ',' SPLIT
+    [
+      SWAP
+      <%
+        '-' SPLIT 'mc2bank.trace.tmp' STORE
+        
+        $mc2bank.trace.tmp 0 GET 'mc2bank.trace.name' STORE
+        $mc2bank.trace.tmp 2 GET TOLONG 'mc2bank.trace.time.n' STORE
+        
+        <% 'mc2bank.trace.time.n-1' DEFINED %>
+        <%
+          'mark' $mc2bank.trace.name '--> Ops:' $mc2bank.trace.time.ops ',Time' $mc2bank.trace.time.n $mc2bank.trace.time.n-1 - ' ' 6 JOIN
+        %>
+        <%
+          '=== Start trace at' $mc2bank.trace.time.n ISO8601 'with mark' $mc2bank.trace.name '===' ' ' 5 JOIN
+        %>
+        IFTE
+        
+        $mc2bank.trace.time.n 'mc2bank.trace.time.n-1' STORE
+        $mc2bank.trace.tmp 1 GET TOLONG 'mc2bank.trace.time.ops' STORE
+      %> FOREACH
+    ] REVERSE
+    LIST-> DROP
+  %>
+  <% 'no trace found' %>
+  IFTE
+%>
