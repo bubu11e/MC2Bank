@@ -6,15 +6,15 @@
 // Output : 
 //
 <%
-  'tick' STORE
-  'selector' STORE
-  'token' STORE
+  'mc2bank.alert.tick' STORE
+  'mc2bank.alert.selector' STORE
+  'mc2bank.alert.token' STORE
   
-  $tick TYPEOF 'LONG' == ASSERT 
-  $selector TYPEOF 'MAP' == ASSERT
-  $token TYPEOF 'STRING' == ASSERT
+  $mc2bank.alert.tick TYPEOF 'LONG' == ASSERT 
+  $mc2bank.alert.selector TYPEOF 'MAP' == ASSERT
+  $mc2bank.alert.token TYPEOF 'STRING' == ASSERT
   
-  [ NEWGTS 'alert.ack' RENAME $selector RELABEL [ $tick NaN NaN NaN T ] ADDVALUE ]
-  $token
+  [ NEWGTS 'alert.ack' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN T ] ADDVALUE ]
+  $mc2bank.alert.token
   UPDATE
 %>

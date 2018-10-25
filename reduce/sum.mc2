@@ -5,9 +5,9 @@
 // Output : [ GTS ]
 //
 <%
-  'labels' STORE
-  'gts' STORE
+  'mc2bank.reduce.labels' STORE
+  'mc2bank.reduce.gts' STORE
 
   // ToDo : Assert that GTS is bucketized.
-  [ $gts $labels reducer.sum ] REDUCE // Compute sum
+  [ $mc2bank.reduce.gts $mc2bank.reduce.labels reducer.sum ] REDUCE // Compute sum
 %>

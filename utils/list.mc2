@@ -6,13 +6,13 @@
 // Output: Classes
 //
 <%
-  'labels' STORE
-  'class' STORE
-  'token' STORE
+  'mc2bank.utils.labels' STORE
+  'mc2bank.utils.class' STORE
+  'mc2bank.utils.token' STORE
 
-  $token
-  $class
-  $labels
+  $mc2bank.utils.token
+  $mc2bank.utils.class
+  $mc2bank.utils.labels
   FIND
 
   [ SWAP <% NAME %> FOREACH ] UNIQUE

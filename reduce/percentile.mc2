@@ -6,28 +6,28 @@
 // Output : [ GTS ]
 //
 <%
-  'percentile' STORE // Store asked percentile
-  'labels' STORE     // Store equivalence classes
+  'mc2bank.reduce.percentile' STORE // Store asked percentile
+  'mc2bank.reduce.labels' STORE     // Store equivalence classes
   
   [ SWAP
-    $labels
+    $mc2bank.reduce.labels
     <%
-      'input' STORE
-      $input 7 GET LSORT 'values' STORE // Store ordered values
-      $values SIZE 1 TODOUBLE - $percentile * 100. / 'rank' STORE // Store percentile rank in values array
+      'mc2bank.reduce.input' STORE
+      $mc2bank.reduce.input 7 GET LSORT 'mc2bank.reduce.values' STORE // Store ordered values
+      $mc2bank.reduce.values SIZE 1 TODOUBLE - $mc2bank.reduce.percentile * 100. / 'mc2bank.reduce.rank' STORE // Store percentile rank in values array
 
-      $rank FLOOR 'xa' STORE
-      $xa 'xb' STORE
+      $mc2bank.reduce.rank FLOOR 'mc2bank.reduce.xa' STORE
+      $mc2bank.reduce.xa 'mc2bank.reduce.xb' STORE
 
-      <% $rank $xa - 0. > %>
-      <% $xa 1 + 'xb' STORE %>
+      <% $mc2bank.reduce.rank $mc2bank.reduce.xa - 0. > %>
+      <% $mc2bank.reduce.xa 1 + 'mc2bank.reduce.xb' STORE %>
       IFT
 
-      $values $xa GET 'ya' STORE
-      $values $xb GET 'yb' STORE
+      $mc2bank.reduce.values $mc2bank.reduce.xa GET 'mc2bank.reduce.ya' STORE
+      $mc2bank.reduce.values $mc2bank.reduce.xb GET 'mc2bank.reduce.yb' STORE
   
       // Here we use the Tailor-Young formula to compute the linear interpolation
-      $input 0 GET NaN NaN NaN $ya $rank $xa - $yb $ya - $xb $xa - / * +
+      $mc2bank.reduce.input 0 GET NaN NaN NaN $mc2bank.reduce.ya $mc2bank.reduce.rank $mc2bank.reduce.xa - $mc2bank.reduce.yb $mc2bank.reduce.ya - $mc2bank.reduce.xb $mc2bank.reduce.xa - / * +
     %> MACROREDUCER
   ] REDUCE
 %>

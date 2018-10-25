@@ -8,25 +8,25 @@
 // Output :
 //
 <%
-  NULL 'details' STORE
+  NULL 'mc2bank.alert.details' STORE
   <% DUP TYPEOF 'MAP' == %>
-  <% 'details' STORE %>
+  <% 'mc2bank.alert.details' STORE %>
   IFT
   
-  'level' STORE
-  'tick' STORE
-  'selector' STORE
-  'token' STORE
+  'mc2bank.alert.level' STORE
+  'mc2bank.alert.tick' STORE
+  'mc2bank.alert.selector' STORE
+  'mc2bank.alert.token' STORE
   
-  $level TYPEOF 'LONG' == ASSERT
-  $tick TYPEOF 'LONG' == ASSERT 
-  $selector TYPEOF 'MAP' == ASSERT
-  $token TYPEOF 'STRING' == ASSERT
+  $mc2bank.alert.level TYPEOF 'LONG' == ASSERT
+  $mc2bank.alert.tick TYPEOF 'LONG' == ASSERT 
+  $mc2bank.alert.selector TYPEOF 'MAP' == ASSERT
+  $mc2bank.alert.token TYPEOF 'STRING' == ASSERT
   
-  [ NEWGTS 'alert.level' RENAME $selector RELABEL [ $tick NaN NaN NaN $level ] ADDVALUE ]
-  <% $details ISNULL ! %>
-  <% [ NEWGTS 'alert.details' RENAME $selector RELABEL [ $tick NaN NaN NaN $details ->JSON ] ADDVALUE ] APPEND %>
+  [ NEWGTS 'alert.level' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.level ] ADDVALUE ]
+  <% $mc2bank.alert.details ISNULL ! %>
+  <% [ NEWGTS 'alert.details' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.details ->JSON ] ADDVALUE ] APPEND %>
   IFT
-  $token
+  $mc2bank.alert.token
   UPDATE
 %>

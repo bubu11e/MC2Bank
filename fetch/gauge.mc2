@@ -9,21 +9,21 @@
 // Output: [ GTS ]
 //
 <%
-  'interval' STORE
-  'span' STORE
-  'now' STORE
-  'labels' STORE
-  'class' STORE
-  'token' STORE
+  'mc2bank.fetch.interval' STORE
+  'mc2bank.fetch.span' STORE
+  'mc2bank.fetch.now' STORE
+  'mc2bank.fetch.labels' STORE
+  'mc2bank.fetch.class' STORE
+  'mc2bank.fetch.token' STORE
 
-  $token
-  $class
-  $labels
-  $now
-  $span
+  $mc2bank.fetch.token
+  $mc2bank.fetch.class
+  $mc2bank.fetch.labels
+  $mc2bank.fetch.now
+  $mc2bank.fetch.span
   FETCH
 
-  [ SWAP bucketizer.last $now $interval $span $interval / ] BUCKETIZE
+  [ SWAP bucketizer.last $mc2bank.fetch.now $mc2bank.fetch.interval $mc2bank.fetch.span $mc2bank.fetch.interval / ] BUCKETIZE
 
   [ NaN NaN NaN 0 ] FILLVALUE // Replace empty spaces by 0
 %>
