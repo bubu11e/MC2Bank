@@ -70,10 +70,10 @@
     <%
       'mc2bank.alert.tick' STORE
       { 
-        'mc2bank.alert.tick' $mc2bank.alert.tick 
-        'mc2bank.alert.alert' $mc2bank.alert.selector 
-        'mc2bank.alert.level' $mc2bank.alert.selected_level $mc2bank.alert.tick ATTICK 4 GET
-        'mc2bank.alert.details' $mc2bank.alert.selected_details $mc2bank.alert.tick ATTICK 4 GET // Retrieve the value at the tick we are interested in
+        'tick' $mc2bank.alert.tick 
+        'alert' $mc2bank.alert.selector 
+        'level' $mc2bank.alert.selected_level $mc2bank.alert.tick ATTICK 4 GET
+        'details' $mc2bank.alert.selected_details $mc2bank.alert.tick ATTICK 4 GET // Retrieve the value at the tick we are interested in
                   <% DUP ISNULL ! %> <% JSON-> %> IFT
       } $mc2bank.alert.notify_parameters LIST-> DROP $mc2bank.alert.notify_macro EVAL
     %> FOREACH
