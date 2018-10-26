@@ -1,0 +1,16 @@
+//
+// Description : Store an argument into a var. Throw an exception if the type of the argument is invalid.
+// Input: argument to check
+//        name of the var to store it
+//        expected type
+// Output: Classes
+//
+<%
+  'mc2bank.utils.type' STORE
+  'mc2bank.utils.name' STORE
+  'mc2bank.utils.argument' STORE
+  <% $mc2bank.utils.argument TYPEOF $mc2bank.utils.type != %>
+  <% 'Invalid argument, type for argument "' $mc2bank.utils.name '" received is' $mc2bank.utils.argument TYPEOF ', expected is' $mc2bank.utils.type '.' ' ' 7 JOIN  %>
+  <% $mc2bank.utils.argument $mc2bank.utils.name STORE %>
+  IFTE
+%>
