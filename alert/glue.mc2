@@ -78,7 +78,7 @@
         'level' $mc2bank.alert.selected_levels $mc2bank.alert.tick ATTICK 4 GET
         'details' $mc2bank.alert.selected_details $mc2bank.alert.tick ATTICK 4 GET // Retrieve the value at the tick we are interested in
                   <% DUP ISNULL ! %> <% JSON-> %> IFT
-      } $mc2bank.alert.notify_parameters LIST-> DROP
+      }
       // Call the notification macro
       $mc2bank.alert.notify_parameters
       $mc2bank.alert.notify_macro EVAL
