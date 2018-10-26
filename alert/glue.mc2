@@ -22,7 +22,7 @@
    'UTF-8' ->BYTES
     SHA1
     ->HEX
-  %> 'mc2bank.alert.key' STORE
+  %> 'mc2bank.alert.hash' STORE
 
   
   // Fetch alerts time series
@@ -40,8 +40,8 @@
   // Each key match a unique alert computed with the macro 'mc2bank.alert.key'
   {} 'mc2bank.alert.details_m' STORE
   {} 'mc2bank.alert.acks_m' STORE
-  $mc2bank.alert.details <% $mc2bank.alert.details_m SWAP DUP LABELS $mc2bank.alert.key EVAL PUT DROP %> FOREACH
-  $mc2bank.alert.acks <% $mc2bank.alert.acks_m SWAP DUP LABELS $mc2bank.alert.key EVAL PUT DROP %> FOREACH
+  $mc2bank.alert.details <% $mc2bank.alert.details_m SWAP DUP LABELS $mc2bank.alert.hash EVAL PUT DROP %> FOREACH
+  $mc2bank.alert.acks <% $mc2bank.alert.acks_m SWAP DUP LABELS $mc2bank.alert.hash EVAL PUT DROP %> FOREACH
 
   // Running through every alert
   $mc2bank.alert.levels
@@ -49,7 +49,7 @@
     'mc2bank.alert.selected_levels' STORE
     // Retrieve alert selector
     $mc2bank.alert.selected_levels LABELS '.app' REMOVE DROP 'mc2bank.alert.selector' STORE
-    $mc2bank.alert.selected_levels LABELS  $mc2bank.alert.key EVAL 'mc2bank.alert.key' STORE
+    $mc2bank.alert.selected_levels LABELS  $mc2bank.alert.hash EVAL 'mc2bank.alert.key' STORE
 
     // Retrieve details matching selector (we don't use the filter framework has it's not effiscient enough here)
     $mc2bank.alert.details_m $mc2bank.alert.key GET DUP <% ISNULL %> <% DROP NEWGTS 'mc2bank.alert.alert.details' RENAME $mc2bank.alert.selector RELABEL %> IFT 'mc2bank.alert.selected_details' STORE
