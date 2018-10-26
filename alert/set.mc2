@@ -23,7 +23,7 @@
   $mc2bank.alert.selector TYPEOF 'MAP' == ASSERT
   $mc2bank.alert.token TYPEOF 'STRING' == ASSERT
   
-  [ NEWGTS 'alert.level' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.level ] ADDVALUE ]
+  [ NEWGTS 'alert.levels' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.level ] ADDVALUE ]
   <% $mc2bank.alert.details ISNULL ! %>
   <% [ NEWGTS 'alert.details' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.details ->JSON ] ADDVALUE ] APPEND %>
   IFT

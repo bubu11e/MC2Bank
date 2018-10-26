@@ -14,7 +14,7 @@
   $mc2bank.alert.selector TYPEOF 'MAP' == ASSERT
   $mc2bank.alert.token TYPEOF 'STRING' == ASSERT
   
-  [ NEWGTS 'alert.ack' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN T ] ADDVALUE ]
+  [ NEWGTS 'alert.acks' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN T ] ADDVALUE ]
   $mc2bank.alert.token
   UPDATE
 %>
