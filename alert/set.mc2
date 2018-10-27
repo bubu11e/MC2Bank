@@ -1,32 +1,27 @@
 //
-// Description : This set level for an alert
+// Description : This set level and details (is needed) for an alert
 // Input :  write_token (For alert storage)
 //          selector (Map that uniquely match this alert)
 //          tick (Instant of the alert)
 //          level (Level of the alert as a long)
-//          details (Map with details informations about the alert)
+//          details (Map with details informations about the alert, optional)
 // Output :
 //
 <%
-  NULL 'mc2bank.alert.details' STORE
+  NULL 'mc2bank.alert.set.details' STORE
   <% DUP TYPEOF 'MAP' == %>
-  <% 'mc2bank.alert.details' STORE %>
+  <% 'mc2bank.alert.set.details' STORE %>
   IFT
   
-  'mc2bank.alert.level' STORE
-  'mc2bank.alert.tick' STORE
-  'mc2bank.alert.selector' STORE
-  'mc2bank.alert.token' STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.set.level'    STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.set.tick'     STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.set.selector' STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.set.token'    STORE
   
-  $mc2bank.alert.level TYPEOF 'LONG' == ASSERT
-  $mc2bank.alert.tick TYPEOF 'LONG' == ASSERT 
-  $mc2bank.alert.selector TYPEOF 'MAP' == ASSERT
-  $mc2bank.alert.token TYPEOF 'STRING' == ASSERT
-  
-  [ NEWGTS 'alert.levels' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.level ] ADDVALUE ]
-  <% $mc2bank.alert.details ISNULL ! %>
-  <% [ NEWGTS 'alert.details' RENAME $mc2bank.alert.selector RELABEL [ $mc2bank.alert.tick NaN NaN NaN $mc2bank.alert.details ->JSON ] ADDVALUE ] APPEND %>
+  [ NEWGTS 'alert.levels' RENAME $mc2bank.alert.set.selector RELABEL [ $mc2bank.alert.set.tick NaN NaN NaN $mc2bank.alert.set.level ] ADDVALUE ]
+  <% $mc2bank.alert.set.details ISNULL ! %>
+  <% [ NEWGTS 'alert.details' RENAME $mc2bank.alert.set.selector RELABEL [ $mc2bank.alert.set.tick NaN NaN NaN $mc2bank.alert.set.details ->JSON ] ADDVALUE ] APPEND %>
   IFT
-  $mc2bank.alert.token
+  $mc2bank.alert.set.token
   UPDATE
 %>

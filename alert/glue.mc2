@@ -1,87 +1,27 @@
 //
-// Description : This retrieve all unaknowledged alerts
+// Description : This is the major macro in alert management, it will fetch alerts gts and generate notifications.
 // Input :  read_token (For alert storage)
 //          alert_filter (Map that filter alerts)
 //          end (Instant of the last alert to be taken into account)
 //          depth (Period to watch)
-//          notify_parameters (Notify macro parameters as a map)
-//          notify_macro (Notify macro to trigger for every non acknoledged alert)
-// Output : [ GTS ] (One per alert with unaknowledged ticks) 
+//          notify_parameters { 'macro' <% %> 'stack' [] }
+// Output : 
 //
 <%
-  'mc2bank.alert.notify_macro' STORE
-  'mc2bank.alert.notify_parameters' STORE
-  'mc2bank.alert.depth' STORE
-  'mc2bank.alert.end' STORE
-  'mc2bank.alert.alert_filter' STORE
-  'mc2bank.alert.token' STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.glue.configs' STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.glue.depth'   STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.glue.end'     STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.glue.filter'  STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.glue.token'   STORE
 
-  <%
-    MAP-> ->MAP MSORT
-    MAP-> '' SWAP TOLONG JOIN
-   'UTF-8' ->BYTES
-    SHA1
-    ->HEX
-  %> 'mc2bank.alert.hash' STORE
+  $mc2bank.alert.glue.token
+  $mc2bank.alert.glue.filter
+  $mc2bank.alert.glue.end
+  $mc2bank.alert.glue.depth
+  @MC2Bank/alert/fetch
 
-  
-  // Fetch alerts time series
-  [ $mc2bank.alert.token '~alert.(levels|acks|details)' $mc2bank.alert.alert_filter $mc2bank.alert.end $mc2bank.alert.depth ] FETCH
+  @MC2Bank/alert/cleanup
 
-  // Filter differents classes into differents vars
-  DUP DUP
-  // Here we compact the levels time series to only keep changing state
-  // (We don't use the classic COMPACT function as it keep the point before the state change as well as the first and last point of the serie)
-  [ SWAP [] 'alert.levels' filter.byclass ] FILTER @MC2Bank/gt/compact_time 'mc2bank.alert.levels' STORE
-  [ SWAP [] 'alert.details' filter.byclass ] FILTER 'mc2bank.alert.details' STORE
-  [ SWAP [] 'alert.acks' filter.byclass ] FILTER 'mc2bank.alert.acks' STORE
-
-  // Generate map to store details and acks for performance
-  // Each key match a unique alert computed with the macro 'mc2bank.alert.key'
-  {} 'mc2bank.alert.details_m' STORE
-  {} 'mc2bank.alert.acks_m' STORE
-  $mc2bank.alert.details <% $mc2bank.alert.details_m SWAP DUP LABELS $mc2bank.alert.hash EVAL PUT DROP %> FOREACH
-  $mc2bank.alert.acks <% $mc2bank.alert.acks_m SWAP DUP LABELS $mc2bank.alert.hash EVAL PUT DROP %> FOREACH
-
-  // Running through every alert
-  $mc2bank.alert.levels
-  <%
-    'mc2bank.alert.selected_levels' STORE
-    // Retrieve alert selector
-    $mc2bank.alert.selected_levels LABELS '.app' REMOVE DROP 'mc2bank.alert.selector' STORE
-    $mc2bank.alert.selected_levels LABELS  $mc2bank.alert.hash EVAL 'mc2bank.alert.key' STORE
-
-    // Retrieve details matching selector (we don't use the filter framework has it's not effiscient enough here)
-    $mc2bank.alert.details_m $mc2bank.alert.key GET DUP <% ISNULL %> <% DROP NEWGTS 'mc2bank.alert.alert.details' RENAME $mc2bank.alert.selector RELABEL %> IFT 'mc2bank.alert.selected_details' STORE
-
-    // Retrieve acks matching selector (we don't use the filter framework has it's not effiscient enough here)
-    $mc2bank.alert.acks_m $mc2bank.alert.key GET DUP <% ISNULL %> <% DROP NEWGTS 'alert.acks' RENAME $mc2bank.alert.selector RELABEL %> IFT 'mc2bank.alert.selected_acks' STORE
-    
-    // Filter acknowledged ticks
-    [
-      // Get alert acks time serie
-      [ $mc2bank.alert.selected_acks ]
-      [ $mc2bank.alert.selected_levels ]
-      []
-      op.negmask
-    ] APPLY
-    
-    TICKS
-    
-    // Running through every ticks
-    <%
-      'mc2bank.alert.tick' STORE
-      // Generate alert map we will pass to the notification macro
-      { 
-        'tick' $mc2bank.alert.tick 
-        'alert' $mc2bank.alert.selector 
-        'level' $mc2bank.alert.selected_levels $mc2bank.alert.tick ATTICK 4 GET
-        'details' $mc2bank.alert.selected_details $mc2bank.alert.tick ATTICK 4 GET // Retrieve the value at the tick we are interested in
-                  <% DUP ISNULL ! %> <% JSON-> %> IFT
-      }
-      // Call the notification macro
-      $mc2bank.alert.notify_parameters
-      $mc2bank.alert.notify_macro EVAL
-    %> FOREACH
-  %> FOREACH
+  $mc2bank.alert.glue.configs
+  @MC2Bank/alert/notify
 %>

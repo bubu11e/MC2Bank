@@ -1,0 +1,13 @@
+//
+// Description : This convert an alert into a unique key
+// Input :  alert (as a map)
+// Output : key (as a string)
+//
+<%
+  DUP TYPEOF 'MAP'    == ASSERT
+  MAP-> ->MAP MSORT          // Sort map
+  MAP-> '' SWAP TOLONG JOIN  // Convert map to string
+ 'UTF-8' ->BYTES
+  SHA1                       // Compute key (Here we use sha1 as it's quick to compute)
+  ->HEX
+%>

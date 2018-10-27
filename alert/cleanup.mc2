@@ -1,0 +1,51 @@
+//
+// Description : This macro remove aknowledged alerts
+// Input : [ GTS ] 
+// Output : [ GTS ]
+//
+<%
+  DUP TYPEOF 'LIST' == ASSERT 'mc2bank.alert.cleanup.gts'  STORE
+
+  // Split input gts by class
+  [ $mc2bank.alert.cleanup.gts [] 'alert.levels' filter.byclass ] FILTER @MC2Bank/gt/compact_time 'mc2bank.alert.cleanup.levels'  STORE
+  [ $mc2bank.alert.cleanup.gts [] 'alert.details' filter.byclass ] FILTER 'mc2bank.alert.cleanup.details' STORE
+  [ $mc2bank.alert.cleanup.gts [] 'alert.acks' filter.byclass ] FILTER 'mc2bank.alert.cleanup.acks' STORE
+
+  // Generate map to store acks for performance
+  // Each key match a unique alert computed with the macro '@MC2Bank/alert/hash'
+  {} 'mc2bank.alert.cleanup.acks_m' STORE
+  $mc2bank.alert.cleanup.acks <% $mc2bank.alert.cleanup.acks_m SWAP DUP LABELS @MC2Bank/alert/hash PUT DROP %> FOREACH
+
+  [
+    // Run through every alert
+    $mc2bank.alert.cleanup.levels
+    <%
+      'mc2bank.alert.cleanup.selected_levels' STORE
+      // Compute current alert key
+      $mc2bank.alert.cleanup.selected_levels LABELS @MC2Bank/alert/hash 'mc2bank.alert.cleanup.key' STORE
+
+      // Retrieve acks matching selector (we don't use the filter framework has it's not effiscient enough here, but a map instead)
+      $mc2bank.alert.cleanup.acks_m $mc2bank.alert.cleanup.key GET 'mc2bank.alert.cleanup.selected_acks' STORE 
+
+      // If there is no acks serie for the selected alert, we return the serie.
+      // Otherwise, we compute a negmask between th acks serie and the levels serie to keep only unaknowledged alerts.
+      <% $mc2bank.alert.cleanup.selected_acks ISNULL %>
+      <% $mc2bank.alert.cleanup.selected_levels %>
+      <%
+        [
+          [ $mc2bank.alert.cleanup.selected_acks ]
+          [ $mc2bank.alert.cleanup.selected_levels ]
+          []
+          op.negmask
+        ] APPLY 
+      %>
+      IFTE
+    %> FOREACH
+  ]
+
+  // Remove empty gts (all ticks have been aknowledged)
+  NONEMPTY
+
+  // Append details series to the list (previously filtered)
+  $mc2bank.alert.cleanup.details APPEND
+%>

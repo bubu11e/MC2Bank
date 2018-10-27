@@ -1,0 +1,54 @@
+//
+// Description : This macro convert alerts gts into notifications.
+// Input : [ GTS ] 
+//         { configuration }
+// Output :
+//
+<%
+  DUP TYPEOF 'MAP' == ASSERT 'mc2bank.alert.notify.configs' STORE
+  DUP TYPEOF 'LIST' == ASSERT 'mc2bank.alert.notify.gts'  STORE
+ 
+  // Filter gts by class
+  [ $mc2bank.alert.notify.gts [] 'alert.levels' filter.byclass ] FILTER 'mc2bank.alert.notify.levels'  STORE
+  [ $mc2bank.alert.notify.gts [] 'alert.details' filter.byclass ] FILTER 'mc2bank.alert.notify.details'  STORE
+
+  // Generate map to store details for performance
+  // Each key match a unique alert computed with the macro '@MC2Bank/alert/hash' 
+  {} 'mc2bank.alert.notify.details_m' STORE
+  $mc2bank.alert.notify.details <% $mc2bank.alert.notify.details_m SWAP DUP LABELS @MC2Bank/alert/hash PUT DROP %> FOREACH
+  
+  // Run through every gts containing alerts
+  $mc2bank.alert.notify.levels
+  <%
+    'mc2bank.alert.notify.selected_levels' STORE
+    $mc2bank.alert.notify.selected_levels LABELS '.app' REMOVE DROP 'mc2bank.alert.notify.selector' STORE
+    $mc2bank.alert.notify.selected_levels LABELS @MC2Bank/alert/hash 'mc2bank.alert.notify.key' STORE
+
+    // Retrieve details matching selector (we don't use the filter framework has it's not effiscient enough here)
+    $mc2bank.alert.notify.details_m $mc2bank.alert.notify.key GET
+    <% DUP ISNULL %>
+    <% DROP NEWGTS 'alert.details' RENAME $mc2bank.alert.notify.selected_levels LABELS RELABEL %> 
+    IFT 
+    'mc2bank.alert.notify.selected_details' STORE
+
+    // We will send notification chronologically
+    $mc2bank.alert.notify.selected_levels SORT TICKS
+    <%
+      'mc2bank.alert.notify.selected_tick' STORE
+      // Generate stack and call the notification macro into a try block
+      <%
+        $mc2bank.alert.notify.configs 'stack' GET LIST-> DROP
+        {
+          'alert'   $mc2bank.alert.notify.selector
+          'tick'    $mc2bank.alert.notify.selected_tick
+          'level'   $mc2bank.alert.notify.selected_levels $mc2bank.alert.notify.selected_tick ATTICK 4 GET
+          'details' $mc2bank.alert.notify.selected_details $mc2bank.alert.notify.selected_tick ATTICK 4 GET <% DUP ISNULL ! %> <% JSON-> %> IFT
+        }
+        $mc2bank.alert.notify.configs 'macro' GET EVAL
+      %>
+      <% %>
+      <% %>
+      TRY
+    %> FOREACH
+  %> FOREACH
+%>

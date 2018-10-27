@@ -1,0 +1,23 @@
+//
+// Description : This retrieve all informations about the specified alerts
+// Input :  read_token (For alert storage)
+//          alert_filter (Map that filter alerts)
+//          end (Instant of the last alert to be taken into account)
+//          depth (Period to watch)
+// Output : [ GTS ] 
+//
+<%
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.depth'  STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.end'    STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.fetch.filter' STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.fetch.token'  STORE
+
+  // Fetch alerts time series
+  [
+    $mc2bank.alert.fetch.token
+    '~alert.(levels|details|acks)'
+    $mc2bank.alert.fetch.filter
+    $mc2bank.alert.fetch.end
+    $mc2bank.alert.fetch.depth
+  ] FETCH
+%>
