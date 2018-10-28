@@ -5,6 +5,8 @@
 //
 <%
   DUP TYPEOF 'MAP'    == ASSERT
+  '.subscriber' REMOVE DROP
+  '.app' REMOVE DROP
   MAP-> ->MAP MSORT          // Sort map
   MAP-> '' SWAP TOLONG JOIN  // Convert map to string
  'UTF-8' ->BYTES

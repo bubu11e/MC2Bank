@@ -8,16 +8,17 @@
 // Output : 
 //
 <%
-  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.glue.configs' STORE
-  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.glue.depth'   STORE
-  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.glue.end'     STORE
-  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.glue.filter'  STORE
-  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.glue.token'   STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.glue.configs'    STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.glue.depth'      STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.glue.end'        STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.glue.filter'     STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.glue.token'      STORE
 
   $mc2bank.alert.glue.token
   $mc2bank.alert.glue.filter
   $mc2bank.alert.glue.end
   $mc2bank.alert.glue.depth
+  $mc2bank.alert.glue.configs 'name' GET
   @MC2Bank/alert/fetch
 
   @MC2Bank/alert/cleanup

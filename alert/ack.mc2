@@ -6,11 +6,12 @@
 // Output : 
 //
 <%
-  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.ack.tick'     STORE
-  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.ack.selector' STORE
-  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.ack.token'    STORE
+  DUP TYPEOF 'STRING'   == ASSERT 'mc2bank.alert.ack.subscriber' STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.ack.tick'       STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.ack.selector'   STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.ack.token'      STORE
   
-  [ NEWGTS 'alert.acks' RENAME $mc2bank.alert.ack.selector RELABEL [ $mc2bank.alert.ack.tick NaN NaN NaN T ] ADDVALUE ]
+  [ NEWGTS 'alert.acks' RENAME $mc2bank.alert.ack.selector $mc2bank.alert.ack.subscriber '.subscriber' PUT RELABEL [ $mc2bank.alert.ack.tick NaN NaN NaN T ] ADDVALUE ]
   $mc2bank.alert.ack.token
   UPDATE
 %>

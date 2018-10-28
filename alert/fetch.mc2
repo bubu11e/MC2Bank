@@ -7,10 +7,11 @@
 // Output : [ GTS ] 
 //
 <%
-  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.depth'  STORE
-  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.end'    STORE
-  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.fetch.filter' STORE
-  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.fetch.token'  STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.fetch.subscriber' STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.depth'      STORE
+  DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.end'        STORE
+  DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.fetch.filter'     STORE
+  DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.fetch.token'      STORE
 
   // Fetch alerts time series
   [
@@ -25,19 +26,29 @@
   
   <%
     'mc2bank.alert.fetch.gts' STORE
-    
+
     <% $mc2bank.alert.fetch.gts NAME 'alert.levels' == %>
-      // Store levels as a list
-      <% $mc2bank.alert.fetch.result 'levels' GET $mc2bank.alert.fetch.gts +! DROP %>
+    <%
+      $mc2bank.alert.fetch.result 'levels' GET $mc2bank.alert.fetch.gts +! DROP
+      CONTINUE
+    %>
+    IFT
+
     <% $mc2bank.alert.fetch.gts NAME 'alert.details' == %>
-      // Store details as a map (key is a hash of the alert name)
-      <% $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts DUP LABELS @MC2Bank/alert/hash PUT DROP %>
-    <% $mc2bank.alert.fetch.gts NAME 'alert.acks' == %>
-      // Store acks as a map (key is a hash of the alert name)
+    // Store details as a map (key is a hash of the alert name)
+    <%
+      $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts DUP LABELS @MC2Bank/alert/hash PUT DROP
+      CONTINUE
+    %>
+    IFT
+
+    <% $mc2bank.alert.fetch.gts NAME 'alert.acks' == $mc2bank.alert.fetch.gts LABELS '.subscriber' GET ISNULL ! && %>
+    // Store acks as a map (key is a hash of the alert name)
+    <%
+      <% $mc2bank.alert.fetch.gts LABELS '.subscriber' GET $mc2bank.alert.fetch.subscriber == %>
       <% $mc2bank.alert.fetch.result 'acks' GET $mc2bank.alert.fetch.gts DUP LABELS @MC2Bank/alert/hash PUT DROP %>
-    <% 'not handled serie name in alert system' FAIL %>
-    3
-    SWITCH
+      IFT
+    %> IFT
   %> FOREACH
   
   $mc2bank.alert.fetch.result
