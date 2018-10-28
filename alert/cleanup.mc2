@@ -4,21 +4,18 @@
 // Output : [ GTS ]
 //
 <%
-  DUP TYPEOF 'LIST' == ASSERT 'mc2bank.alert.cleanup.gts'  STORE
-
-  // Split input gts by class
-  [ $mc2bank.alert.cleanup.gts [] 'alert.levels' filter.byclass ] FILTER @MC2Bank/gt/compact_time 'mc2bank.alert.cleanup.levels'  STORE
-  [ $mc2bank.alert.cleanup.gts [] 'alert.details' filter.byclass ] FILTER 'mc2bank.alert.cleanup.details' STORE
-  [ $mc2bank.alert.cleanup.gts [] 'alert.acks' filter.byclass ] FILTER 'mc2bank.alert.cleanup.acks' STORE
+  DUP TYPEOF 'MAP' == ASSERT 'mc2bank.alert.cleanup.gts'  STORE
 
   // Generate map to store acks for performance
   // Each key match a unique alert computed with the macro '@MC2Bank/alert/hash'
   {} 'mc2bank.alert.cleanup.acks_m' STORE
-  $mc2bank.alert.cleanup.acks <% $mc2bank.alert.cleanup.acks_m SWAP DUP LABELS @MC2Bank/alert/hash PUT DROP %> FOREACH
+  $mc2bank.alert.cleanup.gts 'acks' GET <% $mc2bank.alert.cleanup.acks_m SWAP DUP LABELS @MC2Bank/alert/hash PUT DROP %> FOREACH
 
   [
     // Run through every alert
-    $mc2bank.alert.cleanup.levels
+    $mc2bank.alert.cleanup.gts 'levels' GET
+    // Keep only changing state
+    @MC2Bank/gt/compact_time
     <%
       'mc2bank.alert.cleanup.selected_levels' STORE
       // Compute current alert key
@@ -45,7 +42,5 @@
 
   // Remove empty gts (all ticks have been aknowledged)
   NONEMPTY
-
-  // Append details series to the list (previously filtered)
-  $mc2bank.alert.cleanup.details APPEND
+  $mc2bank.alert.cleanup.gts SWAP 'levels' PUT
 %>

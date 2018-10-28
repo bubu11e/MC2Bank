@@ -11,6 +11,7 @@
   DUP TYPEOF 'LONG'   == ASSERT 'mc2bank.alert.fetch.end'    STORE
   DUP TYPEOF 'MAP'    == ASSERT 'mc2bank.alert.fetch.filter' STORE
   DUP TYPEOF 'STRING' == ASSERT 'mc2bank.alert.fetch.token'  STORE
+  'fetch/configuration' @MC2Bank/trace/mark
 
   // Fetch alerts time series
   [
@@ -20,4 +21,22 @@
     $mc2bank.alert.fetch.end
     $mc2bank.alert.fetch.depth
   ] FETCH
+
+  { 'levels' [] 'details' [] 'acks' [] } 'mc2bank.alert.fetch.result' STORE
+  
+  <%
+    'mc2bank.alert.fetch.gts' STORE
+    
+    <% $mc2bank.alert.fetch.gts NAME 'alert.levels' == %>
+      <% $mc2bank.alert.fetch.result 'levels' GET $mc2bank.alert.fetch.gts +! DROP %>
+    <% $mc2bank.alert.fetch.gts NAME 'alert.details' == %>
+      <% $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts +! DROP %>
+    <% $mc2bank.alert.fetch.gts NAME 'alert.acks' == %>
+      <% $mc2bank.alert.fetch.result 'acks' GET $mc2bank.alert.fetch.gts +! DROP %>
+    <% FAIL %>
+    3
+    SWITCH
+  %> FOREACH
+  
+  $mc2bank.alert.fetch.result
 %>
