@@ -8,11 +8,6 @@
   DUP TYPEOF 'MAP' == ASSERT 'mc2bank.alert.notify.configs' STORE
   DUP TYPEOF 'MAP' == ASSERT 'mc2bank.alert.notify.gts'  STORE
  
-  // Generate map to store details for performance
-  // Each key match a unique alert computed with the macro '@MC2Bank/alert/hash' 
-  {} 'mc2bank.alert.notify.details_m' STORE
-  $mc2bank.alert.notify.gts 'details' GET <% $mc2bank.alert.notify.details_m SWAP DUP LABELS @MC2Bank/alert/hash PUT DROP %> FOREACH
-
   // Run through every gts containing alerts
   $mc2bank.alert.notify.gts 'levels' GET
   <%
@@ -21,7 +16,7 @@
     $mc2bank.alert.notify.selected_levels LABELS @MC2Bank/alert/hash 'mc2bank.alert.notify.key' STORE
 
     // Retrieve details matching selector (we don't use the filter framework has it's not effiscient enough here)
-    $mc2bank.alert.notify.details_m $mc2bank.alert.notify.key GET
+    $mc2bank.alert.notify.gts 'details' GET $mc2bank.alert.notify.key GET
     <% DUP ISNULL %>
     <% DROP NEWGTS 'alert.details' RENAME $mc2bank.alert.notify.selected_levels LABELS RELABEL %> 
     IFT 

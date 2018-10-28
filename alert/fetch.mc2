@@ -21,21 +21,20 @@
     $mc2bank.alert.fetch.depth
   ] FETCH
 
-  { 'levels' [] 'details' [] 'acks' [] } 'mc2bank.alert.fetch.result' STORE
+  { 'levels' [] 'details' {} 'acks' {} } 'mc2bank.alert.fetch.result' STORE
   
   <%
     'mc2bank.alert.fetch.gts' STORE
     
     <% $mc2bank.alert.fetch.gts NAME 'alert.levels' == %>
+      // Store levels as a list
       <% $mc2bank.alert.fetch.result 'levels' GET $mc2bank.alert.fetch.gts +! DROP %>
     <% $mc2bank.alert.fetch.gts NAME 'alert.details' == %>
-      <%
-        $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts +! DROP
-      %>
+      // Store details as a map (key is a hash of the alert name)
+      <% $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts DUP LABELS @MC2Bank/alert/hash PUT DROP %>
     <% $mc2bank.alert.fetch.gts NAME 'alert.acks' == %>
-      <%
-        $mc2bank.alert.fetch.result 'acks' GET $mc2bank.alert.fetch.gts +! DROP
-      %>
+      // Store acks as a map (key is a hash of the alert name)
+      <% $mc2bank.alert.fetch.result 'acks' GET $mc2bank.alert.fetch.gts DUP LABELS @MC2Bank/alert/hash PUT DROP %>
     <% 'not handled serie name in alert system' FAIL %>
     3
     SWITCH
