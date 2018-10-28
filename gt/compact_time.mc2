@@ -6,15 +6,14 @@
 <%
   [ SWAP
     <%
-      'mc2bank.gt.mapping_window' STORE
-      $mc2bank.gt.mapping_window 0 GET 'mc2bank.gt.tick' STORE
-      $mc2bank.gt.mapping_window 7 GET 'mc2bank.gt.values' STORE
+      DUP 0 GET
+      SWAP 7 GET
+      NaN SWAP NaN SWAP NaN SWAP
 
-      <% $mc2bank.gt.values UNIQUE SIZE 1 == %>
-      <% $mc2bank.gt.tick NaN NaN NaN NULL %>
-      <% $mc2bank.gt.tick NaN NaN NaN $mc2bank.gt.values DUP SIZE 1 - GET %>
+      <% DUP UNIQUE SIZE 1 == %>
+      <% DROP NULL %>
+      <% 1 GET %>
       IFTE
-
     %> MACROMAPPER
     1
     0
