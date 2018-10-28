@@ -29,10 +29,14 @@
     <% $mc2bank.alert.fetch.gts NAME 'alert.levels' == %>
       <% $mc2bank.alert.fetch.result 'levels' GET $mc2bank.alert.fetch.gts +! DROP %>
     <% $mc2bank.alert.fetch.gts NAME 'alert.details' == %>
-      <% $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts +! DROP %>
+      <%
+        $mc2bank.alert.fetch.result 'details' GET $mc2bank.alert.fetch.gts +! DROP
+      %>
     <% $mc2bank.alert.fetch.gts NAME 'alert.acks' == %>
-      <% $mc2bank.alert.fetch.result 'acks' GET $mc2bank.alert.fetch.gts +! DROP %>
-    <% FAIL %>
+      <%
+        $mc2bank.alert.fetch.result 'acks' GET $mc2bank.alert.fetch.gts +! DROP
+      %>
+    <% 'not handled serie name in alert system' FAIL %>
     3
     SWITCH
   %> FOREACH
