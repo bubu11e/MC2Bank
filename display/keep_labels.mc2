@@ -1,0 +1,14 @@
+//
+// Description : This macro relabel GTS keeping only specified labels
+// Input : [ GTS ]
+//         [ labels ]
+// Output : [ GTS ]
+//
+<%
+  'mc2bank.display.keep_labels.labels' STORE
+  [ SWAP
+    <%
+      DUP LABELS $mc2bank.display.keep_labels.labels SUBMAP NULL NULL PUT RELABEL
+    %> FOREACH
+  ]
+%>

@@ -30,4 +30,7 @@
       $mc2bank.reduce.input 0 GET NaN NaN NaN $mc2bank.reduce.ya $mc2bank.reduce.rank $mc2bank.reduce.xa - $mc2bank.reduce.yb $mc2bank.reduce.ya - $mc2bank.reduce.xb $mc2bank.reduce.xa - / * +
     %> MACROREDUCER
   ] REDUCE
+
+  $mc2bank.reduce.labels
+  @MC2Bank/display/keep_labels
 %>
