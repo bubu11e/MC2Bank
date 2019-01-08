@@ -5,5 +5,13 @@
 //
 <%
   [ SWAP mapper.delta 1 0 0 ]  MAP                       // Compute delta
-  [ SWAP <% DUP VALUES SIZE 1 - -1 * SHRINK %> FOREACH ] // Remove first point
+  [ SWAP
+    <% DUP
+      VALUES SIZE 1 - 
+      <% DUP 0 <= %>
+      <% DROP DROP %>
+      <% -1 * SHRINK %>
+      IFTE
+    %> FOREACH
+  ] // Remove first point
 %>
