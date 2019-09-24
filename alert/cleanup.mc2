@@ -6,21 +6,27 @@
 <%
   DUP TYPEOF 'MAP' == ASSERT 'mc2bank.alert.cleanup.gts'  STORE
 
+  // In this first step, we're going to filter only changin state in the alert gts
   [
     // Run through every alert
     $mc2bank.alert.cleanup.gts 'levels' GET
+
+    [] 'mc2bank.alert.cleanup.keys' STORE
+
     // Keep only changing state
-    @MC2Bank/gt/compact_time
+    @MC2Bank/gt/compact_time NONEMPTY
     <%
       'mc2bank.alert.cleanup.selected_levels' STORE
       // Compute current alert key
       $mc2bank.alert.cleanup.selected_levels LABELS @MC2Bank/alert/hash 'mc2bank.alert.cleanup.key' STORE
+      // Save hash for later use
+      $mc2bank.alert.cleanup.keys $mc2bank.alert.cleanup.key +! DROP
 
       // Retrieve acks matching selector (we don't use the filter framework has it's not effiscient enough here, but a map instead)
       $mc2bank.alert.cleanup.gts 'acks' GET $mc2bank.alert.cleanup.key GET 'mc2bank.alert.cleanup.selected_acks' STORE 
 
       // If there is no acks serie for the selected alert, we return the serie.
-      // Otherwise, we compute a negmask between th acks serie and the levels serie to keep only unaknowledged alerts.
+      // Otherwise, we compute a negmask between the acks serie and the levels serie to keep only unaknowledged alerts.
       <% $mc2bank.alert.cleanup.selected_acks ISNULL %>
       <% $mc2bank.alert.cleanup.selected_levels %>
       <%
@@ -37,5 +43,33 @@
 
   // Remove empty gts (all ticks have been aknowledged)
   NONEMPTY
+
+  // In this second step, we're going to keep only gts that haven't been acknowledged recently and not retained in previous step.
+  [
+    // Run through every alert
+    $mc2bank.alert.cleanup.gts 'levels' GET
+    <%
+      'mc2bank.alert.cleanup.selected_levels' STORE
+      // Compute current alert key
+      $mc2bank.alert.cleanup.selected_levels LABELS @MC2Bank/alert/hash 'mc2bank.alert.cleanup.key' STORE
+
+      // If alert has been kept in previous step, go to next one
+      <% $mc2bank.alert.cleanup.keys $mc2bank.alert.cleanup.key CONTAINS SWAP DROP %>
+      <% CONTINUE %>
+      IFT
+
+      // If the gts has been acknowledged recently, go to next one
+      <% $mc2bank.alert.cleanup.gts 'acks' GET $mc2bank.alert.cleanup.key GET ISNULL ! %>
+      <% CONTINUE %>
+      IFT
+
+      $mc2bank.alert.cleanup.selected_levels
+    %> FOREACH
+  ] @MC2Bank/gt/last
+
+  // Merge the result of the two previous step.
+  APPEND
+
+  // Store results
   $mc2bank.alert.cleanup.gts SWAP 'levels' PUT
 %>
