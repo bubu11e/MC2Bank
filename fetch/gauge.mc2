@@ -16,12 +16,13 @@
   'mc2bank.fetch.class' STORE
   'mc2bank.fetch.token' STORE
 
-  $mc2bank.fetch.token
-  $mc2bank.fetch.class
-  $mc2bank.fetch.labels
-  $mc2bank.fetch.now
-  $mc2bank.fetch.span
-  FETCH
+  [
+    $mc2bank.fetch.token
+    $mc2bank.fetch.class
+    $mc2bank.fetch.labels
+    $mc2bank.fetch.now
+    $mc2bank.fetch.span
+  ] FETCH
 
   [ SWAP bucketizer.last $mc2bank.fetch.now $mc2bank.fetch.interval $mc2bank.fetch.span $mc2bank.fetch.interval / ] BUCKETIZE
 
