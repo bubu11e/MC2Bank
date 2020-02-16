@@ -22,24 +22,29 @@
     IFT 
     'mc2bank.alert.notify.selected_details' STORE
 
+    // Initialize an array that will contains notifications for the current selector
+    [] 'mc2bank.alert.notify.list' STORE
     // We will send notification chronologically
     $mc2bank.alert.notify.selected_levels SORT TICKS
     <%
       'mc2bank.alert.notify.selected_tick' STORE
-      // Generate stack and call the notification macro into a try block
-      <%
-        $mc2bank.alert.notify.configs 'stack' GET LIST-> DROP
-        {
-          'alert'   $mc2bank.alert.notify.selector
-          'tick'    $mc2bank.alert.notify.selected_tick
-          'level'   $mc2bank.alert.notify.selected_levels $mc2bank.alert.notify.selected_tick ATTICK 4 GET
-          'details' $mc2bank.alert.notify.selected_details $mc2bank.alert.notify.selected_tick ATTICK 4 GET <% DUP ISNULL ! %> <% JSON-> %> IFT
-        }
-        $mc2bank.alert.notify.configs 'macro' GET EVAL
-      %>
-      <% %>
-      <% %>
-      TRY
+      $mc2bank.alert.notify.list
+      {
+        'alert'   $mc2bank.alert.notify.selector
+        'tick'    $mc2bank.alert.notify.selected_tick
+        'level'   $mc2bank.alert.notify.selected_levels $mc2bank.alert.notify.selected_tick ATTICK 4 GET
+        'details' $mc2bank.alert.notify.selected_details $mc2bank.alert.notify.selected_tick ATTICK 4 GET <% DUP ISNULL ! %> <% JSON-> %> IFT
+      }
+      +! DROP
     %> FOREACH
+    <%
+      // Generate stack and call the notification macro into a try block
+      $mc2bank.alert.notify.configs 'stack' GET LIST-> DROP
+      $mc2bank.alert.notify.list
+      $mc2bank.alert.notify.configs 'macro' GET EVAL
+    %>
+    <% %>
+    <% %>
+    TRY
   %> FOREACH
 %>
